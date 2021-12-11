@@ -29,6 +29,7 @@ begin
 	using Statistics 
 	using LinearAlgebra
 	using Plots
+	using TypedTables
 	
 	# setup my paths (where are my files?)
 	_PATH_TO_ROOT = pwd() 
@@ -60,6 +61,36 @@ Smith School of Chemical and Biomolecular Engineering, Cornell University, Ithac
 # ╔═╡ a0ad3474-1844-41bc-bd95-242aa94a5ff1
 md"""
 ### Introduction
+"""
+
+# ╔═╡ 27d0013a-3c23-4f92-a334-5e4b55e2447e
+md"""PDGN (1,2-propanediol dinitrate or propane glycol dinitrate) is a compound commonly found in propellants and explosives. It is an nitrate ester high explosive that is found both in the liquid propellant and the liquid explosive form [5]. The US navy is a main consumer of Otto Fuel II, a torpedo fuel that comprises approximately 76% PGDN[2] . In this work, we analyze how to manufacture PDGN at 95% purity and stream rate of at least 1.0g/hour in an E. Coli cell-free bioreactor from alpha-d-glucose, a renewable sugar feedstock, in addition to oxygen and potassium nitrate. 
+
+Through this glucose based method, which is accessible all around the world,  we aim to propose a more economically feasible method of producing PDGN. Using oxygen from the air and potassium nitrate, we can develop a relatively cost efficient process that is inexpensive in comparison to current production methods.
+
+Although there is no direct route from sucrose to PGDN, the bioreactor allows us to take advantage of the glycolysis of sucrose in the bioreactor. This reaction mechanism follows the follow chemical equations: 
+
+* (1) ATP + alpha-D-Glucose ⇌ ADP + alpha-D-Glucose 6-phosphate-
+
+* (2)Alpha-D-Glucose 6-phosphate ⇌ beta-D-Fructose 6-phosphate
+
+* (3)beta-D-Fructose 1,6-bisphosphate ⇌ Glycerone phosphate + D-Glyceraldehyde 3-phosphate
+
+* (4)D-Glyceraldehyde 3-phosphate ⇌ Glycerone phosphate
+
+* (5)Glycerone phosphate ⇌ Methylglyoxal + Orthophosphate
+
+* (6)Methylglyoxal + NADPH + H+ ⇌ (S)-Lactaldehyde + NADP+
+
+* (7)(S)-Lactaldehyde + NADH + H+ ⇌ Propane-1,2-diol + NAD+
+
+* (8)Propane-1,2-diol + 2KNO3 ⇌ PDGN + 2KOH
+
+The only addition to this biological reaction is potassium nitrate in order to produce the PDGN. The overall reaction follows the equation:
+
+$$glucose + 2KNO_3 ⇌ PDGN + 2KOH + CO_2 + excess-materials$$
+
+Our goal is to determine the most economically efficient pathway to synthesize the PGDN specifically looking at the sucrose reaction mechanism above. 
 """
 
 # ╔═╡ 40da982c-1cc4-4881-a2ea-fbeef5c46d2d
@@ -526,14 +557,151 @@ md"""
 ### Results and Discussion
 """
 
+# ╔═╡ 218fa01e-5230-49bb-a48a-ebafe81dac4a
+md"""
+##### *Financial Anylsis Using Net Present Value (NPV) Reuslts* 
+"""
+
+
+# ╔═╡ 4030c9b7-b30d-462d-9d28-b8c2ba11a5e9
+md"""
+ ###### **Table 1** summarizes the cost and inventory needed for the process on Day 1.
+"""
+
+
+
+# ╔═╡ cf16db05-b530-4693-8607-f1f45aa702cc
+with_terminal() do
+data = ["Reactors" "100.00" "100.00" "6" "N/A" "N/A" "600.00"
+		"Separators" "20.00" "20.00" "4" "N/A" "N/A" "80.00"
+		"Pump" "1,000.00" "1,000.00" "1" "N/A" "N/A" "1,000.00"
+		"Alpha D-Glucose" "17.90 per 25 grams" "0.72 per gram" "N/A" "0.00882764" "0.21186336" "0.15"
+		"Oxygen" "Free" "Free" "N/A" "Free" "Free" "Free"
+		"Potassium Nitrate" "57 per 100 grams" "0.57 per gram" "N/A" "0.0412501" "0.9900024" "0.56" 
+		"PGDN" "1196.5 per 1 kg" "1.20 per gram" "N/A" "1.08429" 		"26.02296" "31.23"];
+
+header=(["Items", "Purchase Cost", "Calculation Cost", "Number of Equipment Purchased", "Mass Flow Rates", "Cost to run for 24 hours ", "Total Costs after 1 day"],["dollars","dollars","dollars","","g/hr","dollars","dollars"])
+
+hl_lastRow = Highlighter(f      = (data, i, j) -> i %7 == 0,
+                            crayon = Crayon(background = :light_blue))
+hl_lastColumn = Highlighter(f      = (data, i, j) -> j %7 == 0,
+                            crayon = Crayon(background = :light_blue))
+pretty_table(data; header,highlighters =(hl_lastColumn, hl_lastRow))
+end
+
+
+
+
+# ╔═╡ 22178cca-c670-4d4f-9021-22328447f9d3
+md"""
+###### *Note: The last highlighted row represents the revenue made on a day-to-day basis from selling the final product (1,2-propanediol dinitrate).* 
+
+
+From Table 1 above, the total initial (capital) cost for equipment and to run the process on Day 1 accumulates to a total of $1680.72. Then, the cost to run the process will be an additional cost of $0.72 each day. This simple relationship is summarized in the linear equation below. 
+
+
+
+$$TotalSpendingOnDayX = 0.76x+1680.72$$
+
+On the revenue side, the product that is sold each day provides a return of $31.23. 
+
+Total Revenue on Day
+
+$$TotalSpendingOnDayX= 31.23x$$
+
+As a result, it would take roughly 55 days of running the entire process to break even on the investment (by calculating for x). Additionally, at the end of the first year (following the typical 252 trading days rule), the total profit will sit at $6009.32. The results are summarized in Table 2. 
+
+
+"""
+
+# ╔═╡ d6e3755f-8c25-4627-90a8-e056fc2b640b
+md"""
+ ###### **Table 2**
+"""
+
+# ╔═╡ cbe36492-a695-4514-bbd8-c2df553a120d
+with_terminal() do
+data = ["Total Spending" "1,680.72" "1681.44" "1682.16" "1,719.43" "1,720.14" "1,860.64"
+"Total Revenue" "1.23" "31.23" "31.23" "1,717.65" "1,748.88" "7,869.96"
+"Profit" "-1649.49" "-1650.21" "-1650.93" "-1.78" "28.74" "6,009.32"
+];
+
+header=(["" ,"Inital Cost", "Cost on Day 1", "Cost on Day 2", "After 55 days", "After 56 Days", "After 1 year(252 days)"], ["","dollars", "dollars", "dollars", "dollars", "dollars", "dollars"])
+
+pretty_table(data; header)
+end
+
+# ╔═╡ af08e78f-2910-47d6-a4c9-0e01ec0a7697
+md"""  **Table 3**: Total Profit Process Generates Over the Course of 5 years. 
+"""
+
+# ╔═╡ eef3b8c8-410e-4880-a55e-2a09c065bef2
+with_terminal() do
+data = [
+"Total Spending" "1,860.64" "2,041.29" "2,221.93" "2,403.29" "2,583.94" 
+"Total Revenues" "7,869.96" "15,739.92" "23,609.88" "31,479.84" "39,349.80" 
+"Total Profit" "6,009.32" "13,698.63" "21,387.95" "29,076.55" "36,765.86" 
+"Difference from prior year" "6,009.32" "7689.63" "7689.63" "7689.63" "7689.63" 
+];
+
+header=(["","After 1 Year","After 2 Years","After 3 Years", "After 4 Years","After 5 Years"],["","(252 days)","(504 days)","(756 days)", "(1008 days)","(1260 days)"],["", "dollars", "dollars", "dollars", "dollars", "dollars"])
+
+hl_lastRow = Highlighter(f = (data, i, j) -> i %3 == 0,
+                            crayon = Crayon(background = :light_blue))
+
+pretty_table(data; header,highlighters =hl_lastRow)
+end
+
+# ╔═╡ 7850b71d-d834-43ce-9775-77e8c6e7513b
+md"""
+
+As noted after the first year profit of $6,009.32, the process produces a constant profit of $7689.63 each year. 
+
+These final results were compared to an alternative investment at both a constant 10% discount rate and at a constant 1% discount rate via the Net Present Value method. 
+* The lifetime of the comparison was set to 5 years. 
+* The constant discount rate was set to 10% or 0.1 in the parameters, indicating a comparison to a 10% risk-free interest rate that is constant over the payback lifetime.
+* Since the cash flow array was in the thousands, the values were imputed as listed: [-1.68, 6.0, 7.689, 7.689, 7.689, 7.689]. The initial -1.68 represents the initial (capital) investment that was made, and each of the following terms represents the total profit made each year following this investment. 
+* The Present Value of the cash values are as listed: [-1.68, 5.45455, 6.35455, 5.77686, 5.25169, 4.774326]. And then by summing up these values, the Net Present Value is calculated to be 25.9319. 
+* Since the Net Present Value is positive, the project would be a better investment of the initial amount of $1,680 than an alternative investment at a 10% interest rate. 
+* The same logic can be applied to an alternative investment at a 1% interest rate. 
+
+Using the Net Present Value approach, the process performance is indeed more economically feasible than both the alternative investments at a constant yield of 1 % per year or at a constant yield of 10% per year. 
+
+"""
+
 # ╔═╡ ab9084e1-57a2-4c6b-ad32-8fee8c142c43
 md"""
 ### Conclusions
 """
 
+# ╔═╡ 3bea3df5-a395-4831-ab43-1c713deb69f2
+md"""
+While the sucrose to PGDN pathway is a feasible option, it is more economically efficient to use alpha-d-glucose as the starting material. When transferring from sucrose to alpha-d-glucose there was a reduction in co2 production resulting making this pathway a slightly more environmentally favorable option. The pathway analyzed in this reaction is advisable as an alternative to the direct production feeding in 1-2propaindiol and KNO3. The downsides of this reaction is that in creating the PGDN, the Co2 byproduct is approximately 1.25x the amount of PGDN synthesized. [4]Methods such as absorption, adsorption, chemical looping, membrane gas separation or gas hydration have been seen to be useful in capturing Co2. The Co2 emissions should be readily monitored and to ensure it does not exceed a certain threshold. These measures must be taken into account, and thus are one downside to the process. [1] Co2, if captured, however, can be sold back to the food production industry for beverages and other sources. The scale of production of the PGDN would have to be significantly greater for this to be an economically viable option. In addition to the Co2 byproduct, the reaction also produces significant amounts of potassium hydroxide and acetate. [7] Potassium Hydroxide is relatively cheap thus is not worth filtering and selling. This chemical however must be carefully disposed of by diluting and neutralizing. Potassium hydroxide is potentially detrimental to air, soil, and water quality and regulations must be carefully abided by during the production process. [6] The acetate is most easily disposed of by controlled incineration. The management of the byproduct disposal is a tedious yet vital part of the production process however, the overall yield and turnover rate is great enough to still profit off the process while maintaining regulatory compliance. 
+"""
+
 # ╔═╡ 836e69f7-9a2d-4674-8c20-51b07d13b7ab
 md"""
 ### References
+"""
+
+# ╔═╡ f8e863a7-76df-4a78-b86b-9aacc5490663
+md"""
+[1] Chameides, E. R. and B. (2008, April 17). CO2: They Should Bottle That Stuff. Time. Retrieved December 10, 2021, from http://content.time.com/time/specials/2007/article/0,28804,1730759_1731383_1731989,00.html.
+
+[2] The Custodian. (2009, July 19). Otto Fuel II. Otto fuel II - Everything2.com. Retrieved December 11, 2021, from https://everything2.com/title/Otto+fuel+II. 
+
+[3] D -glucose anhydrous, 96 492-62-6. Sigma Aldrich. (n.d.). Retrieved December 10, 2021, from https://www.sigmaaldrich.com/US/en/product/aldrich/158968.
+
+[4] Environmental Protection Agency. (2021, January). Pollution Prevention and Waste Management. EPA. Retrieved December 10, 2021, from https://www.epa.gov/trinationalanalysis/pollution-prevention-and-waste-management. TRI National Analysis
+
+[5] Hichem FETTAKA,* Michel H. LEFEBVRE. (2016). Propylene glycol dinitrate (PGDN) as an explosive taggant. Central European Journal of Energetic Materials. Retrieved December 11, 2021, from https://ipo.lukasiewicz.gov.pl/wydawnictwa/wp-content/uploads/2021/04/Fettaka-1.pdf. 
+
+[6] National Institutes of Health. (n.d.). Ethyl acetate - disposal methods. U.S. National Library of Medicine. Retrieved December 10, 2021, from https://webwiser.nlm.nih.gov/substance?substanceId=446&identifier=Ethyl+Acetate&identifierType=name&menuItemId=59&catId=76.
+
+[7] National Institutes of Health. (n.d.). Potassium hydroxide - disposal methods. U.S. National Library of Medicine. Retrieved December 10, 2021, from https://webwiser.nlm.nih.gov/substance?substanceId=401&identifier=Potassium+Hydroxide&identifierType=name&menuItemId=59&catId=76.
+
+[8] Sucrose for Molecular Biology, = 99.5 GC ... - sigma-aldrich. Sigma Aldrich. (n.d.). Retrieved December 10, 2021, from https://www.sigmaaldrich.com/US/en/product/sigma/s0389. 
+
 """
 
 # ╔═╡ 18b29a1a-4787-11ec-25e3-5f29ebd21430
@@ -614,6 +782,7 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 
 [compat]
 BSON = "~0.3.4"
@@ -624,6 +793,7 @@ Optim = "~1.5.0"
 Plots = "~1.25.1"
 PlutoUI = "~0.7.21"
 PrettyTables = "~1.2.3"
+TypedTables = "~1.4.0"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -795,6 +965,12 @@ uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 [[DelimitedFiles]]
 deps = ["Mmap"]
 uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+
+[[Dictionaries]]
+deps = ["Indexing", "Random"]
+git-tree-sha1 = "8b8de80c4584f8525239555c95955295075beb5b"
+uuid = "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4"
+version = "0.3.16"
 
 [[DiffResults]]
 deps = ["StaticArrays"]
@@ -1000,6 +1176,11 @@ version = "0.2.2"
 git-tree-sha1 = "debdd00ffef04665ccbb3e150747a77560e8fad1"
 uuid = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
 version = "0.1.1"
+
+[[Indexing]]
+git-tree-sha1 = "ce1566720fd6b19ff3411404d4b977acd4814f9f"
+uuid = "313cdc1a-70c2-5d6a-ae34-0150d3930a38"
+version = "1.1.1"
 
 [[IniFile]]
 deps = ["Test"]
@@ -1439,6 +1620,12 @@ git-tree-sha1 = "f0bccf98e16759818ffc5d97ac3ebf87eb950150"
 uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
 version = "1.8.1"
 
+[[SplitApplyCombine]]
+deps = ["Dictionaries", "Indexing"]
+git-tree-sha1 = "dec0812af1547a54105b4a6615f341377da92de6"
+uuid = "03a91e81-4c3e-53e1-a0a4-9c0c8f19dd66"
+version = "1.2.0"
+
 [[Static]]
 deps = ["IfElse"]
 git-tree-sha1 = "e7bc80dc93f50857a5d1e3c8121495852f407e6a"
@@ -1501,6 +1688,12 @@ deps = ["Random", "Test"]
 git-tree-sha1 = "216b95ea110b5972db65aa90f88d8d89dcb8851c"
 uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
 version = "0.9.6"
+
+[[TypedTables]]
+deps = ["Adapt", "Dictionaries", "Indexing", "SplitApplyCombine", "Tables", "Unicode"]
+git-tree-sha1 = "f91a10d0132310a31bc4f8d0d29ce052536bd7d7"
+uuid = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
+version = "1.4.0"
 
 [[URIs]]
 git-tree-sha1 = "97bbe755a53fe859669cd907f2d96aee8d2c1355"
@@ -1746,6 +1939,7 @@ version = "0.9.1+5"
 # ╟─4855467c-3670-4e0b-a64e-0e09effa6e0d
 # ╟─8ca99e1f-afd6-4c1c-8918-db6d9747099c
 # ╟─a0ad3474-1844-41bc-bd95-242aa94a5ff1
+# ╟─27d0013a-3c23-4f92-a334-5e4b55e2447e
 # ╟─40da982c-1cc4-4881-a2ea-fbeef5c46d2d
 # ╟─4867b51c-fb6c-42a9-b87d-4131e014b402
 # ╟─059e3b4e-4e84-4934-b787-32d0f42a0247
@@ -1759,16 +1953,27 @@ version = "0.9.1+5"
 # ╟─87e21b0b-5f6b-4402-baf3-68a150ef0fc2
 # ╟─64daa21a-ac42-4b20-9e6b-ec2d19cd50fc
 # ╟─77df0589-a5a0-45cf-a0db-156621634262
-# ╠═e1da943a-0d11-4776-bb67-2d8caad4cb18
+# ╟─e1da943a-0d11-4776-bb67-2d8caad4cb18
 # ╟─28a9763c-c5e1-41ae-b52c-445bcb839755
 # ╟─24d220cd-0ead-44f1-9327-9db647b8108b
 # ╟─cf367be1-ebde-4f46-974c-e2fdd1fdd903
-# ╟─0782768c-951f-4189-954d-cba8b401314d
 # ╟─ea3305ae-cb8e-4a2b-83e2-ef882223e961
 # ╟─77107b01-dae9-4900-b9f7-f0c0224a492b
+# ╟─218fa01e-5230-49bb-a48a-ebafe81dac4a
+# ╟─4030c9b7-b30d-462d-9d28-b8c2ba11a5e9
+# ╟─cf16db05-b530-4693-8607-f1f45aa702cc
+# ╟─22178cca-c670-4d4f-9021-22328447f9d3
+# ╟─d6e3755f-8c25-4627-90a8-e056fc2b640b
+# ╟─cbe36492-a695-4514-bbd8-c2df553a120d
+# ╟─af08e78f-2910-47d6-a4c9-0e01ec0a7697
+# ╟─eef3b8c8-410e-4880-a55e-2a09c065bef2
+# ╟─7850b71d-d834-43ce-9775-77e8c6e7513b
 # ╟─ab9084e1-57a2-4c6b-ad32-8fee8c142c43
+# ╟─3bea3df5-a395-4831-ab43-1c713deb69f2
 # ╟─836e69f7-9a2d-4674-8c20-51b07d13b7ab
+# ╟─f8e863a7-76df-4a78-b86b-9aacc5490663
 # ╟─18b29a1a-4787-11ec-25e3-5f29ebd21430
 # ╟─16dca67c-f280-4a6f-bd79-308cf63dabf6
+# ╟─0782768c-951f-4189-954d-cba8b401314d
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
