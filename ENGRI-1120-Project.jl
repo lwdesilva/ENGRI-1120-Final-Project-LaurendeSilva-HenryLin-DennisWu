@@ -54,7 +54,9 @@ md"""
 
 # ╔═╡ 8ca99e1f-afd6-4c1c-8918-db6d9747099c
 html"""
-<p style="font-size:20px;">Team name: Lauren de Silva, Dennis Wu, Henry Lin </br>
+<p style="font-size:20px;">
+Team name: Super Swag Super Heated Steam Engines </br>
+Team Members: Lauren de Silva, Dennis Wu, Henry Lin </br>
 Smith School of Chemical and Biomolecular Engineering, Cornell University, Ithaca NY 14850</p>
 """
 
@@ -97,6 +99,17 @@ Our goal is to determine the most economically efficient pathway to synthesize t
 md"""
 ### Materials and Methods
 """
+
+# ╔═╡ 446bd227-6579-4c87-8588-0de111c5a529
+md""" ##### Flux Balance Analysis Assumptions and Methods
+The primary method used to compute the optimal open extent of reaction was a flux balance analysis. The flux balance is a practice of optimizing the genetic processes within the cell to increase the production of what we need. This form of metabolic engineering is modeled in the flux balance code used below. The program uses a linear equation as follows: 
+max vi=1rc1v1
+The equation seeks to take the metabolic flux na the objective coefficient and subject to two constraints of the metabolic flux to find the optimal flux. To use the flux balance analysis we make the simplifying assumptions that the microfluidic chip used is well-mixed and operates at steady-state. Also that the chip is being run at a constant temperature and pressure and that the liquid phase is ideal. 
+
+The program reads that the optimal reaction extent is 2.466 mmol/hr. This is our maximum flow of PGDN we can create. After this is established we move onto separating the output stream to extract the pure PGDN from the other by-products. 
+"""
+
+
 
 # ╔═╡ 4867b51c-fb6c-42a9-b87d-4131e014b402
 md"""
@@ -219,6 +232,20 @@ begin
 	end
 end
 
+# ╔═╡ 64daa21a-ac42-4b20-9e6b-ec2d19cd50fc
+md"""
+###### Table 1: Optimal reaction extent table computed by flux balance analysis. 
+
+Each row corresponds to a reaction in the model where $\dot{\epsilon}_{i}$ denotes the optimal open reaction extent computed by flux balance analysis. 
+"""
+
+# ╔═╡ 637c5a39-63db-4d76-bb4c-ecc819482036
+md""" ##### Connecting the Chip Reactions in Series"""
+
+# ╔═╡ ae718670-bd74-48f5-96ed-d45a8d3bccb9
+md"""While the one chip produces 2.466 mmol/hr, the output stream is  not solely composed of PGDN. We must arrange the chips in a series to achieve a output of 14.796mmol/hr to produce enough PGDN in the stream to achieve our goal. We need approximately 6 chips to achieve this. Placing the chips in series is overfilled, more economically efficient and it also yields a higher output with fewer chips. The assumptions we make are that the microfluidic chip is well-mixed and operates at steady-state, the chip remains at constant T, P and the liquid phase is ideal.
+"""
+
 # ╔═╡ 3d84169a-3a85-4d9f-b7bb-b7264017fbb8
 begin
 
@@ -274,7 +301,7 @@ status_flag_array
 
 # ╔═╡ e933ddd9-8fd8-416a-8710-a64d3eb36f79
 md"""
-###### Table 1: State table from a single chip (species mol flow rate mmol/hr at exit). 
+###### Table 2: State table from a single chip (species mol flow rate mmol/hr at exit). 
 
 The mass flow for all species at the exit of the chip is encoded in the `mass_dot_output_array` array.
 """
@@ -366,6 +393,9 @@ begin
 	end
 end
 
+# ╔═╡ 379ba281-98ea-4a52-93f0-2f1b1ec34606
+
+
 # ╔═╡ 7720a5a6-5d7e-4c79-8aba-0a4bb04973af
 md"""
 ##### Compute the downstream separation using Magical Separation Units (MSUs)
@@ -376,13 +406,6 @@ md"""
 Reaction string format: $(@bind rxn_string_ver Select(["first"=>"KEGG", "second"=>"HUMAN"]))
 """
 
-
-# ╔═╡ 64daa21a-ac42-4b20-9e6b-ec2d19cd50fc
-md"""
-###### Table 2: Optimal reaction extent table computed by flux balance analysis. 
-
-Each row corresponds to a reaction in the model where $\dot{\epsilon}_{i}$ denotes the optimal open reaction extent computed by flux balance analysis. 
-"""
 
 # ╔═╡ 77df0589-a5a0-45cf-a0db-156621634262
 with_terminal() do
@@ -1941,18 +1964,22 @@ version = "0.9.1+5"
 # ╟─a0ad3474-1844-41bc-bd95-242aa94a5ff1
 # ╟─27d0013a-3c23-4f92-a334-5e4b55e2447e
 # ╟─40da982c-1cc4-4881-a2ea-fbeef5c46d2d
+# ╟─446bd227-6579-4c87-8588-0de111c5a529
 # ╟─4867b51c-fb6c-42a9-b87d-4131e014b402
-# ╟─059e3b4e-4e84-4934-b787-32d0f42a0247
+# ╠═059e3b4e-4e84-4934-b787-32d0f42a0247
 # ╟─7410ecfc-0280-4ff2-8932-cfb2022e47c4
-# ╟─3d84169a-3a85-4d9f-b7bb-b7264017fbb8
 # ╟─d541352c-4956-4bbe-a11a-27f78f3b8afe
 # ╟─538f7122-e6ae-4256-8756-cd41d27ca085
-# ╟─e933ddd9-8fd8-416a-8710-a64d3eb36f79
-# ╟─7d35f315-927c-44b2-948a-c4e3d273a5e1
-# ╟─7720a5a6-5d7e-4c79-8aba-0a4bb04973af
-# ╟─87e21b0b-5f6b-4402-baf3-68a150ef0fc2
 # ╟─64daa21a-ac42-4b20-9e6b-ec2d19cd50fc
 # ╟─77df0589-a5a0-45cf-a0db-156621634262
+# ╟─637c5a39-63db-4d76-bb4c-ecc819482036
+# ╟─ae718670-bd74-48f5-96ed-d45a8d3bccb9
+# ╟─3d84169a-3a85-4d9f-b7bb-b7264017fbb8
+# ╟─e933ddd9-8fd8-416a-8710-a64d3eb36f79
+# ╟─7d35f315-927c-44b2-948a-c4e3d273a5e1
+# ╠═379ba281-98ea-4a52-93f0-2f1b1ec34606
+# ╟─7720a5a6-5d7e-4c79-8aba-0a4bb04973af
+# ╟─87e21b0b-5f6b-4402-baf3-68a150ef0fc2
 # ╟─e1da943a-0d11-4776-bb67-2d8caad4cb18
 # ╟─28a9763c-c5e1-41ae-b52c-445bcb839755
 # ╟─24d220cd-0ead-44f1-9327-9db647b8108b
