@@ -1,4 +1,4 @@
-### A Pluto.jl notebook ###
+
 # v0.17.3
 
 using Markdown
